@@ -9,6 +9,7 @@ import Browse from './components/Browse'
 function App() {
   return <HashRouter>
     <Routes>
+      <Route index element={<Browse/>} />
       <Route path ="/browse" element ={<Browse/>}></Route>
       <Route path ="/search" element ={<Search/>}></Route>
     </Routes>

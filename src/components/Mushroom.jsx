@@ -1,5 +1,5 @@
 import { Container, Row, Col, Card, Badge, ListGroup, Alert, Carousel, Button } from 'react-bootstrap'
-import Map from './Map'
+import SpecimenMap from './SpecimenMap'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import { getSpecimensForMushroom } from '../services/mushroomService'
@@ -15,12 +15,16 @@ export default function Mushroom({ mushroom }) {
             const specimensData = getSpecimensForMushroom(mushroom.id)
             
             if (specimensData) {
-                // Filter specimens with valid images
-                const publicSpecs = specimensData.public.filter(s => s.imageUrl && s.imageUrl.trim() !== '')
-                const privateSpecs = specimensData.private.filter(s => s.imageUrl && s.imageUrl.trim() !== '')
+                // Get all specimens (with and without images for the map)
+                const publicSpecs = specimensData.public || []
+                const privateSpecs = specimensData.private || []
                 
-                setUserSpecimens([...publicSpecs, ...privateSpecs]) // Combine for display
-                setSharedSpecimens([]) // No longer using shared specimens separately
+                // For carousel display, filter only those with images
+                const publicSpecsWithImages = publicSpecs.filter(s => s.imageUrl && s.imageUrl.trim() !== '')
+                const privateSpecsWithImages = privateSpecs.filter(s => s.imageUrl && s.imageUrl.trim() !== '')
+                
+                setUserSpecimens([...publicSpecsWithImages, ...privateSpecsWithImages])
+                setSharedSpecimens([...publicSpecs, ...privateSpecs]) // All specimens for map
             }
         }
     }, [mushroom])
@@ -106,11 +110,11 @@ export default function Mushroom({ mushroom }) {
                         <Card.Img 
                             variant="top" 
                             src={mushroom.image || "https://via.placeholder.com/400x300?text=No+Image"} 
-                            alt={mushroom.title || mushroom.name}
+                            alt={mushroom.image ? `${mushroom.title || mushroom.name} mushroom` : "No image available"}
                             style={{ height: '300px', objectFit: 'cover' }}
                         />
                         <Card.Body>
-                            <Card.Title className="h2">{mushroom.title || mushroom.name}</Card.Title>
+                            <h1 className="h2">{mushroom.title || mushroom.name}</h1>
                             {mushroom.scientificName && (
                                 <Card.Subtitle className="mb-2 text-muted font-italic h5">
                                     {mushroom.scientificName}
@@ -128,7 +132,7 @@ export default function Mushroom({ mushroom }) {
                     {/* Safety Information */}
                     <Card className="mb-4">
                         <Card.Header className={`bg-${safetyInfo.variant} text-white`}>
-                            <h5 className="mb-0">🍄 Safety Information</h5>
+                            <h5 className="mb-0">Safety Information</h5>
                         </Card.Header>
                         <Card.Body>
                             <div className="d-flex align-items-center mb-2">
@@ -141,7 +145,7 @@ export default function Mushroom({ mushroom }) {
                                 <strong>{safetyInfo.text}</strong>
                                 {mushroom.edibility === 'poisonous' && (
                                     <div className="mt-1">
-                                        <small>⚠️ Never consume without expert identification</small>
+                                        <small>Never consume without expert identification</small>
                                     </div>
                                 )}
                             </Alert>
@@ -151,7 +155,7 @@ export default function Mushroom({ mushroom }) {
                     {/* Characteristics */}
                     <Card className="mb-4">
                         <Card.Header>
-                            <h5 className="mb-0">📊 Characteristics</h5>
+                            <h5 className="mb-0">Characteristics</h5>
                         </Card.Header>
                         <ListGroup variant="flush">
                             {mushroom.habitat && (
@@ -191,7 +195,7 @@ export default function Mushroom({ mushroom }) {
                     {(mushroom.location || mushroom.distribution || mushroom.growingConditions) && (
                         <Card className="mb-4">
                             <Card.Header>
-                                <h5 className="mb-0">🌍 Location & Growing</h5>
+                                <h5 className="mb-0">Location & Growing</h5>
                             </Card.Header>
                             <ListGroup variant="flush">
                                 {mushroom.location && (
@@ -215,16 +219,21 @@ export default function Mushroom({ mushroom }) {
                                     </ListGroup.Item>
                                 )}
                             </ListGroup>
-                            {/* Map Section */}
-                            {mushroom.location && (
-                                <Card.Body>
-                                    <h6 className="mb-3">📍 Location Map</h6>
-                                    <Map 
-                                        location={mushroom.location} 
-                                        mushroomName={mushroom.title || mushroom.name}
-                                    />
-                                </Card.Body>
-                            )}
+                        </Card>
+                    )}
+
+                    {/* Specimen Locations Map - Show whenever there are specimens with location data */}
+                    {sharedSpecimens.length > 0 && (
+                        <Card className="mb-4">
+                            <Card.Header>
+                                <h5 className="mb-0">Specimen Locations</h5>
+                            </Card.Header>
+                            <Card.Body>
+                                <SpecimenMap 
+                                    specimens={sharedSpecimens}
+                                    mushroomName={mushroom.title || mushroom.name}
+                                />
+                            </Card.Body>
                         </Card>
                     )}
                 </Col>
@@ -237,7 +246,7 @@ export default function Mushroom({ mushroom }) {
                     <Col md={6}>
                         <Card className="mb-4">
                             <Card.Header>
-                                <h5 className="mb-0">👨‍🍳 Culinary Uses</h5>
+                                <h5 className="mb-0">Culinary Uses</h5>
                             </Card.Header>
                             <Card.Body>
                                 <Card.Text>{mushroom.culinaryUses}</Card.Text>
@@ -251,7 +260,7 @@ export default function Mushroom({ mushroom }) {
                     <Col md={6}>
                         <Card className="mb-4">
                             <Card.Header className="bg-warning">
-                                <h5 className="mb-0">⚠️ Similar Species</h5>
+                                <h5 className="mb-0">Similar Species</h5>
                             </Card.Header>
                             <Card.Body>
                                 <Card.Text>{mushroom.similarSpecies}</Card.Text>
@@ -265,7 +274,7 @@ export default function Mushroom({ mushroom }) {
                     <Col md={12}>
                         <Card className="mb-4">
                             <Card.Header>
-                                <h5 className="mb-0">📝 Notes</h5>
+                                <h5 className="mb-0">Notes</h5>
                             </Card.Header>
                             <Card.Body>
                                 <Card.Text>{mushroom.notes}</Card.Text>
@@ -280,24 +289,25 @@ export default function Mushroom({ mushroom }) {
                 )}
 
                 {/* User Specimens Carousel */}
-                {(userSpecimens.length > 0 || sharedSpecimens.length > 0) && (
+                {userSpecimens.length > 0 && (
                     <Col md={12}>
                         <Card className="mb-4">
                             <Card.Header>
-                                <h5 className="mb-0">📸 User Specimens</h5>
+                                <h5 className="mb-0">User Specimens Gallery</h5>
                             </Card.Header>
                             <Card.Body>
-                                {[...userSpecimens, ...sharedSpecimens].length > 0 ? (
-                                    <Carousel 
-                                        indicators={false}
-                                        controls={true}
-                                    >
-                                        {[...userSpecimens, ...sharedSpecimens].map((specimen, index) => (
+                                <Carousel 
+                                    indicators={false}
+                                    controls={true}
+                                    role="region"
+                                    aria-label="User specimens gallery"
+                                >
+                                    {userSpecimens.map((specimen, index) => (
                                             <Carousel.Item key={specimen.id || index}>
                                                 <div className="position-relative d-flex justify-content-center" style={{ minHeight: '400px' }}>
                                                     <img
                                                         src={specimen.imageUrl || "https://via.placeholder.com/400x300?text=Specimen+Image"}
-                                                        alt={`${specimen.name} specimen`}
+                                                        alt={specimen.imageUrl ? `${specimen.name} specimen found at ${specimen.location}` : "No specimen image available"}
                                                         style={{ 
                                                             maxHeight: '400px', 
                                                             maxWidth: '100%',
@@ -315,21 +325,31 @@ export default function Mushroom({ mushroom }) {
                                                             zIndex: 5
                                                         }}
                                                     >
-                                                        {[...userSpecimens, ...sharedSpecimens].map((_, idx) => (
+                                                        {userSpecimens.map((_, idx) => (
                                                             <span
                                                                 key={idx}
+                                                                role="button"
+                                                                tabIndex="0"
+                                                                aria-label={`View specimen ${idx + 1} of ${userSpecimens.length}`}
                                                                 className={`d-inline-block rounded-circle mx-1 ${idx === index ? 'bg-white' : 'bg-secondary'}`}
                                                                 style={{
                                                                     width: '8px',
                                                                     height: '8px',
-                                                                    opacity: idx === index ? 1 : 0.5
+                                                                    opacity: idx === index ? 1 : 0.5,
+                                                                    cursor: 'pointer'
+                                                                }}
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === 'Enter' || e.key === ' ') {
+                                                                        e.preventDefault();
+                                                                        // This would need carousel state management to implement navigation
+                                                                    }
                                                                 }}
                                                             />
                                                         ))}
                                                     </div>
                                                 </div>
                                                 <div className="text-center mt-3 p-3 bg-light rounded">
-                                                    <h5 className="mb-2">{specimen.name}</h5>
+                                                    <h2 className="h5 mb-2">{specimen.name}</h2>
                                                     <p className="mb-1">
                                                         <strong>Location:</strong> {specimen.location}<br/>
                                                         <strong>Date:</strong> {new Date(specimen.date).toLocaleDateString()}<br/>
@@ -344,9 +364,6 @@ export default function Mushroom({ mushroom }) {
                                             </Carousel.Item>
                                         ))}
                                     </Carousel>
-                                ) : (
-                                    <p className="text-muted">No user specimens with images available.</p>
-                                )}
                             </Card.Body>
                         </Card>
                     </Col>

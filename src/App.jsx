@@ -29,6 +29,7 @@ function App() {
 
   return <HashRouter>
     <AuthContext.Provider value={[authStatus, setAuthStatus]}>
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <Routes>
         <Route path ="/" element = {<MushNav/>}>
           <Route index element={<Landing/>} />

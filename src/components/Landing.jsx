@@ -10,7 +10,7 @@ export default function Landing() {
         <Container className="py-5">
             {/* Hero Section */}
             <div className="text-center mb-5">
-                <h1 className="display-4 mb-3">🍄 Mushroom Tracker</h1>
+                <h1 className="display-4 mb-3">Mushroom Tracker</h1>
                 <p className="lead mb-4">
                     Your comprehensive tool for identifying, cataloging, and learning about mushrooms.
                     Explore our database, build your personal collection, and enhance your mycology knowledge.
@@ -50,7 +50,7 @@ export default function Landing() {
                 <Col sm={6} lg={3}>
                     <Card className="h-100 shadow-sm hover-card">
                         <Card.Body className="text-center">
-                            <div className="mb-3" style={{ fontSize: '3rem' }}>🔍</div>
+                            <div className="mb-3" style={{ fontSize: '3rem', fontWeight: 'bold' }}>Search</div>
                             <Card.Title>Search & Identify</Card.Title>
                             <Card.Text>
                                 Quickly find specific mushrooms by name or description. 
@@ -68,7 +68,7 @@ export default function Landing() {
                     <Col sm={6} lg={3}>
                         <Card className="h-100 shadow-sm hover-card">
                             <Card.Body className="text-center">
-                                <div className="mb-3" style={{ fontSize: '3rem' }}>📝</div>
+                                <div className="mb-3" style={{ fontSize: '3rem', fontWeight: 'bold' }}>Track</div>
                                 <Card.Title>My Collection</Card.Title>
                                 <Card.Text>
                                     View and manage your personal mushroom findings. 
@@ -87,7 +87,7 @@ export default function Landing() {
                     <Col sm={6} lg={3}>
                         <Card className="h-100 shadow-sm hover-card">
                             <Card.Body className="text-center">
-                                <div className="mb-3" style={{ fontSize: '3rem' }}>➕</div>
+                                <div className="mb-3" style={{ fontSize: '3rem', fontWeight: 'bold' }}>Add</div>
                                 <Card.Title>Add Discovery</Card.Title>
                                 <Card.Text>
                                     Record a new mushroom discovery with location, date, 
@@ -106,7 +106,7 @@ export default function Landing() {
                     <Col sm={6} lg={3}>
                         <Card className="h-100 shadow-sm hover-card border-warning">
                             <Card.Body className="text-center">
-                                <div className="mb-3" style={{ fontSize: '3rem' }}>🔐</div>
+                                <div className="mb-3" style={{ fontSize: '3rem', fontWeight: 'bold' }}>Secure</div>
                                 <Card.Title>Join the Community</Card.Title>
                                 <Card.Text>
                                     Create an account to build your personal mushroom collection, 
@@ -131,7 +131,7 @@ export default function Landing() {
                 <Col>
                     <Card className="border-danger">
                         <Card.Header className="bg-danger text-white">
-                            <h5 className="mb-0">⚠️ Important Safety Notice</h5>
+                            <h5 className="mb-0">Important Safety Notice</h5>
                         </Card.Header>
                         <Card.Body>
                             <p className="mb-2">

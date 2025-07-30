@@ -78,50 +78,67 @@ export default function Register() {
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
-                            <Form.Label>Username</Form.Label>
+                            <Form.Label htmlFor="register-username">Username</Form.Label>
                             <Form.Control 
+                                id="register-username"
                                 type="text" 
                                 ref={usernameRef}
                                 placeholder="Choose a username"
                                 required
                                 disabled={isLoading}
+                                aria-describedby="username-register-help"
                             />
+                            <Form.Text id="username-register-help" className="visually-hidden">
+                                Choose a unique username for your account
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Email</Form.Label>
+                            <Form.Label htmlFor="register-email">Email</Form.Label>
                             <Form.Control 
+                                id="register-email"
                                 type="email" 
                                 ref={emailRef}
                                 placeholder="Enter your email"
                                 required
                                 disabled={isLoading}
+                                aria-describedby="email-register-help"
                             />
+                            <Form.Text id="email-register-help" className="visually-hidden">
+                                Enter a valid email address
+                            </Form.Text>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Password</Form.Label>
+                            <Form.Label htmlFor="register-password">Password</Form.Label>
                             <Form.Control 
+                                id="register-password"
                                 type="password" 
                                 ref={passwordRef}
                                 placeholder="Create a password"
                                 required
                                 disabled={isLoading}
+                                aria-describedby="password-register-help"
                             />
-                            <Form.Text className="text-muted">
+                            <Form.Text id="password-register-help" className="text-muted">
                                 Must be at least 6 characters long.
                             </Form.Text>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Label htmlFor="register-confirm-password">Confirm Password</Form.Label>
                             <Form.Control 
+                                id="register-confirm-password"
                                 type="password" 
                                 ref={confirmPasswordRef}
                                 placeholder="Confirm your password"
                                 required
                                 disabled={isLoading}
+                                aria-describedby="confirm-password-help"
                             />
+                            <Form.Text id="confirm-password-help" className="visually-hidden">
+                                Re-enter your password to confirm
+                            </Form.Text>
                         </Form.Group>
 
                         <div className="d-grid mb-3">

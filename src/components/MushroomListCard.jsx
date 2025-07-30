@@ -39,9 +39,9 @@ export default function MushroomListCard({ mushroom, showFullDescription = false
 
     const getEdibilityIcon = (edibility) => {
         switch (edibility?.toLowerCase()) {
-            case 'edible': return '✅'
-            case 'poisonous': return '☠️'
-            case 'toxic': return '☠️'
+            case 'edible': return 'SAFE'
+            case 'poisonous': return 'TOXIC'
+            case 'toxic': return 'TOXIC'
             case 'inedible': return '🚫'
             case 'unknown': return '❓'
             default: return '❓'
@@ -79,7 +79,9 @@ export default function MushroomListCard({ mushroom, showFullDescription = false
                     <Col xs={12} sm={2} md={2} className="mb-2 mb-sm-0">
                         <img 
                             src={displayImage || "https://via.placeholder.com/80x60?text=No+Image"} 
-                            alt={mushroom.title || mushroom.name}
+                            alt={displayImage && displayImage !== "https://via.placeholder.com/80x60?text=No+Image" ? 
+                                `${mushroom.title || mushroom.name} mushroom` : 
+                                "No image available"}
                             className="img-fluid rounded"
                             style={{ 
                                 width: '100%',
@@ -130,7 +132,7 @@ export default function MushroomListCard({ mushroom, showFullDescription = false
                                     <div className="d-flex flex-wrap mb-1">
                                         {mushroom.habitat && (
                                             <Badge bg="info" className="me-1 mb-1" style={{ fontSize: '0.65rem' }}>
-                                                🌲 {mushroom.habitat}
+                                                {mushroom.habitat}
                                             </Badge>
                                         )}
                                         {mushroom.season && (
@@ -145,7 +147,7 @@ export default function MushroomListCard({ mushroom, showFullDescription = false
                                         <div>
                                             {mushroom.location && (
                                                 <small className="text-muted">
-                                                    📍 {mushroom.location.length > 25 ? mushroom.location.substring(0, 25) + '...' : mushroom.location}
+                                                    {mushroom.location.length > 25 ? mushroom.location.substring(0, 25) + '...' : mushroom.location}
                                                 </small>
                                             )}
                                             {mushroom.date && (

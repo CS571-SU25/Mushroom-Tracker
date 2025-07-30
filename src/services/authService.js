@@ -12,12 +12,6 @@ export const initializeUserDatabase = () => {
                 password: 'password', // In real app, this would be hashed
                 email: 'demo@example.com',
                 registeredDate: new Date().toISOString()
-            },
-            {
-                username: 'developer',
-                password: 'dev', // In real app, this would be hashed
-                email: 'dev@example.com',
-                registeredDate: new Date().toISOString()
             }
         ]
         

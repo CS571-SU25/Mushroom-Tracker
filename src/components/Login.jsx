@@ -38,17 +38,6 @@ export default function Login() {
         }
     }
 
-    const handleDevLogin = () => {
-        // Quick dev login without form validation
-        try {
-            const authData = authenticateUser('developer', 'dev')
-            setAuthStatus(authData)
-            navigate('/')
-        } catch (err) {
-            setError(err.message)
-        }
-    }
-
     // If already logged in, redirect to home
     if (authStatus) {
         navigate('/')
@@ -65,22 +54,25 @@ export default function Login() {
                     {error && <Alert variant="danger">{error}</Alert>}
                     <Form onSubmit={handleSubmit}>
                         <Form.Group className="mb-3">
-                            <Form.Label>Username</Form.Label>
+                            <Form.Label htmlFor="login-username">Username</Form.Label>
                             <Form.Control 
+                                id="login-username"
                                 type="text" 
                                 ref={usernameRef}
                                 placeholder="Enter username"
                                 required
                                 disabled={isLoading}
+                                aria-describedby="username-demo-help"
                             />
-                            <Form.Text className="text-muted">
+                            <Form.Text id="username-demo-help" className="text-muted">
                                 Demo: username "demo", password "password"
                             </Form.Text>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Password</Form.Label>
+                            <Form.Label htmlFor="login-password">Password</Form.Label>
                             <Form.Control 
+                                id="login-password"
                                 type="password" 
                                 ref={passwordRef}
                                 placeholder="Enter password"
@@ -97,17 +89,6 @@ export default function Login() {
                                 disabled={isLoading}
                             >
                                 {isLoading ? 'Logging in...' : 'Login'}
-                            </Button>
-                        </div>
-
-                        <div className="d-grid mb-3">
-                            <Button 
-                                variant="outline-secondary" 
-                                onClick={handleDevLogin}
-                                size="sm"
-                                disabled={isLoading}
-                            >
-                                🚀 Dev Login (Quick Access)
                             </Button>
                         </div>
 

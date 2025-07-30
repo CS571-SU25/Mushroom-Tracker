@@ -93,7 +93,7 @@ const Map = ({ location, mushroomName }) => {
   if (error && !coordinates) {
     return (
       <div className="alert alert-warning" role="alert">
-        <strong>⚠️ Map Error:</strong> {error}
+        <strong>Map Error:</strong> {error}
       </div>
     );
   }
@@ -116,13 +116,13 @@ const Map = ({ location, mushroomName }) => {
         >
           <Popup>
             <div className="text-center">
-              <strong>🍄 {mushroomName}</strong>
+              <strong>{mushroomName}</strong>
               <br />
               <small className="text-muted">{location}</small>
               {error && (
                 <div className="mt-2">
                   <small className="text-warning">
-                    ⚠️ Approximate location shown
+                    Approximate location shown
                   </small>
                 </div>
               )}

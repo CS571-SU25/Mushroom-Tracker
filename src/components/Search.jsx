@@ -24,7 +24,7 @@ export default function Search() {
     return (
         <Container className="py-4">
             <div className="text-center mb-4">
-                <h1 className="text-primary fw-bold">🔍 Search Mushrooms</h1>
+                <h1 className="text-primary fw-bold">Search Mushrooms</h1>
                 <p className="text-muted">Find mushrooms by name, description, edibility, or habitat</p>
             </div>
             
@@ -32,25 +32,30 @@ export default function Search() {
             <Row className="justify-content-center mb-4">
                 <Col md={8} lg={6}>
                     <Form onSubmit={handleSearch}>
+                        <Form.Label htmlFor="mushroom-search-input" className="visually-hidden">
+                            Search mushrooms
+                        </Form.Label>
                         <InputGroup size="lg" className="shadow-sm">
-                            <InputGroup.Text className="bg-primary text-white border-primary">
-                                🔍
-                            </InputGroup.Text>
                             <Form.Control
+                                id="mushroom-search-input"
                                 ref={searchInputRef}
                                 type="text"
                                 placeholder="Search mushrooms by name, description, edibility, habitat..."
                                 className="border-primary"
-                                style={{ borderLeft: 'none', borderRight: 'none' }}
+                                aria-describedby="search-help-text"
                             />
                             <Button 
                                 type="submit" 
                                 variant="primary" 
                                 className="border-primary"
+                                aria-describedby="search-help-text"
                             >
                                 Search
                             </Button>
                         </InputGroup>
+                        <Form.Text id="search-help-text" className="visually-hidden">
+                            Enter keywords to search for mushrooms in our database
+                        </Form.Text>
                     </Form>
                 </Col>
             </Row>
@@ -60,7 +65,7 @@ export default function Search() {
                 <Col>
                     {!hasSearched ? (
                         <Alert variant="info" className="text-center py-5">
-                            <Alert.Heading className="h4">🔍 Ready to Search</Alert.Heading>
+                            <Alert.Heading className="h4">Ready to Search</Alert.Heading>
                             <p className="mb-0">
                                 Enter a search term above and click "Search" to find mushrooms by name, description, edibility, or habitat.
                             </p>
@@ -75,7 +80,7 @@ export default function Search() {
                         ))
                     ) : (
                         <Alert variant="warning" className="text-center py-5">
-                            <Alert.Heading className="h4">🔍 No mushrooms found</Alert.Heading>
+                            <Alert.Heading className="h4">No mushrooms found</Alert.Heading>
                             <p className="mb-0">
                                 Try adjusting your search terms or browse all mushrooms to discover new species.
                             </p>

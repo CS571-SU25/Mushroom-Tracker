@@ -35,9 +35,9 @@ export default function MushNav() {
                     <div className="d-flex align-items-center justify-content-between">
                         <div className="d-flex align-items-center">
                             <Link to="/" style={{ textDecoration: 'none' }}>
-                                <h2 className="text-white mb-0" style={{ fontWeight: 'bold', fontSize: '2rem' }}>
+                                <h1 className="text-white mb-0" style={{ fontWeight: 'bold', fontSize: '2rem' }}>
                                     Mushroom Tracker
-                                </h2>
+                                </h1>
                             </Link>
                         </div>
                     </div>
@@ -68,9 +68,9 @@ export default function MushNav() {
                     </Nav>
                 </Container>
             </Navbar>
-            <div style={{ paddingTop: '170px' }}>
+            <main id="main-content" style={{ paddingTop: '170px' }}>
                 <Outlet />
-            </div>
+            </main>
         </div>
     )
 }

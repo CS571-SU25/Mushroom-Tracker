@@ -1,67 +1,87 @@
-import { useState } from 'react'
-import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap'
-import MushroomCard from './MushroomCard'
-import mushrooms from './data/mushrooms.json'
+import { useState, useRef } from 'react'
+import { Container, Row, Col, Form, InputGroup, Alert, Button } from 'react-bootstrap'
+import MushroomListCard from './MushroomListCard'
+import { searchAllMushrooms } from '../services/mushroomService'
 
 export default function Search() {
-    const [searchTerm, setSearchTerm] = useState('')
+    const [searchResults, setSearchResults] = useState([])
+    const [hasSearched, setHasSearched] = useState(false)
+    const searchInputRef = useRef()
 
-    // Filter mushrooms based on search term
-    const filteredMushrooms = mushrooms.filter(mushroom =>
-        mushroom.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        mushroom.description.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-
-    const handleSearchChange = (e) => {
-        setSearchTerm(e.target.value)
+    const handleSearch = (e) => {
+        e.preventDefault()
+        const searchTerm = searchInputRef.current.value.trim()
+        
+        if (searchTerm) {
+            const results = searchAllMushrooms(searchTerm)
+            setSearchResults(results)
+        } else {
+            setSearchResults([])
+        }
+        setHasSearched(true)
     }
 
     return (
         <Container className="py-4">
-            <h1 className="text-center mb-4">Search Mushrooms</h1>
+            <div className="text-center mb-4">
+                <h1 className="text-primary fw-bold">🔍 Search Mushrooms</h1>
+                <p className="text-muted">Find mushrooms by name, description, edibility, or habitat</p>
+            </div>
             
             {/* Search Bar */}
             <Row className="justify-content-center mb-4">
-                <Col md={6}>
-                    <InputGroup size="lg">
-                        <InputGroup.Text>🔍</InputGroup.Text>
-                        <Form.Control
-                            type="text"
-                            placeholder="Search mushrooms by name or description..."
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                        />
-                    </InputGroup>
+                <Col md={8} lg={6}>
+                    <Form onSubmit={handleSearch}>
+                        <InputGroup size="lg" className="shadow-sm">
+                            <InputGroup.Text className="bg-primary text-white border-primary">
+                                🔍
+                            </InputGroup.Text>
+                            <Form.Control
+                                ref={searchInputRef}
+                                type="text"
+                                placeholder="Search mushrooms by name, description, edibility, habitat..."
+                                className="border-primary"
+                                style={{ borderLeft: 'none', borderRight: 'none' }}
+                            />
+                            <Button 
+                                type="submit" 
+                                variant="primary" 
+                                className="border-primary"
+                            >
+                                Search
+                            </Button>
+                        </InputGroup>
+                    </Form>
                 </Col>
             </Row>
 
-            {/* Search Results Count */}
-            <div className="text-center mb-3">
-                <p className="text-muted">
-                    {searchTerm ? `Found ${filteredMushrooms.length} mushroom(s) matching "${searchTerm}"` : `Showing all ${mushrooms.length} mushrooms`}
-                </p>
-            </div>
-
-            {/* Mushroom Cards */}
+            {/* Search Results */}
             <Row>
-                {filteredMushrooms.length > 0 ? (
-                    filteredMushrooms.map(mushroom => (
-                        <Col key={mushroom.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
-                            <MushroomCard 
-                                image={mushroom.image}
-                                title={mushroom.title}
-                                description={mushroom.description}
+                <Col>
+                    {!hasSearched ? (
+                        <Alert variant="info" className="text-center py-5">
+                            <Alert.Heading className="h4">🔍 Ready to Search</Alert.Heading>
+                            <p className="mb-0">
+                                Enter a search term above and click "Search" to find mushrooms by name, description, edibility, or habitat.
+                            </p>
+                        </Alert>
+                    ) : searchResults.length > 0 ? (
+                        searchResults.map(mushroom => (
+                            <MushroomListCard 
+                                key={mushroom.id} 
+                                mushroom={mushroom} 
+                                showFullDescription={false}
                             />
-                        </Col>
-                    ))
-                ) : (
-                    <Col xs={12} className="text-center">
-                        <div className="py-5">
-                            <h4 className="text-muted">No mushrooms found</h4>
-                            <p className="text-muted">Try adjusting your search terms</p>
-                        </div>
-                    </Col>
-                )}
+                        ))
+                    ) : (
+                        <Alert variant="warning" className="text-center py-5">
+                            <Alert.Heading className="h4">🔍 No mushrooms found</Alert.Heading>
+                            <p className="mb-0">
+                                Try adjusting your search terms or browse all mushrooms to discover new species.
+                            </p>
+                        </Alert>
+                    )}
+                </Col>
             </Row>
         </Container>
     )

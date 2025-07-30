@@ -2,11 +2,13 @@ import { useRef, useContext, useState } from 'react'
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap'
 import { useNavigate, Link } from 'react-router'
 import AuthContext from '../contexts/AuthContext'
-import { authenticateUser } from '../services/authService'
+import { registerUser, authenticateUser } from '../services/authService'
 
-export default function Login() {
+export default function Register() {
     const usernameRef = useRef()
     const passwordRef = useRef()
+    const confirmPasswordRef = useRef()
+    const emailRef = useRef()
     const [authStatus, setAuthStatus] = useContext(AuthContext)
     const [error, setError] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -16,10 +18,22 @@ export default function Login() {
         e.preventDefault()
         const username = usernameRef.current.value.trim()
         const password = passwordRef.current.value
+        const confirmPassword = confirmPasswordRef.current.value
+        const email = emailRef.current.value.trim()
         
         // Basic validation
-        if (!username || !password) {
-            setError('Please enter both username and password.')
+        if (!username || !password || !email) {
+            setError('Please fill in all required fields.')
+            return
+        }
+
+        if (password !== confirmPassword) {
+            setError('Passwords do not match.')
+            return
+        }
+
+        if (password.length < 6) {
+            setError('Password must be at least 6 characters long.')
             return
         }
 
@@ -27,7 +41,17 @@ export default function Login() {
         setError('')
 
         try {
-            // Use the authentication service
+            // Register the user using the authentication service
+            const userData = {
+                username: username,
+                password: password,
+                email: email
+            }
+            
+            // Register user (this will check for duplicates)
+            registerUser(userData)
+            
+            // Automatically log them in after successful registration
             const authData = authenticateUser(username, password)
             setAuthStatus(authData)
             navigate('/')
@@ -35,17 +59,6 @@ export default function Login() {
             setError(err.message)
         } finally {
             setIsLoading(false)
-        }
-    }
-
-    const handleDevLogin = () => {
-        // Quick dev login without form validation
-        try {
-            const authData = authenticateUser('developer', 'dev')
-            setAuthStatus(authData)
-            navigate('/')
-        } catch (err) {
-            setError(err.message)
         }
     }
 
@@ -59,7 +72,7 @@ export default function Login() {
         <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '80vh' }}>
             <Card style={{ width: '100%', maxWidth: '400px' }}>
                 <Card.Header className="text-center">
-                    <h3>Login to Mushroom Tracker</h3>
+                    <h3>Register for Mushroom Tracker</h3>
                 </Card.Header>
                 <Card.Body>
                     {error && <Alert variant="danger">{error}</Alert>}
@@ -69,13 +82,21 @@ export default function Login() {
                             <Form.Control 
                                 type="text" 
                                 ref={usernameRef}
-                                placeholder="Enter username"
+                                placeholder="Choose a username"
                                 required
                                 disabled={isLoading}
                             />
-                            <Form.Text className="text-muted">
-                                Demo: username "demo", password "password"
-                            </Form.Text>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control 
+                                type="email" 
+                                ref={emailRef}
+                                placeholder="Enter your email"
+                                required
+                                disabled={isLoading}
+                            />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -83,7 +104,21 @@ export default function Login() {
                             <Form.Control 
                                 type="password" 
                                 ref={passwordRef}
-                                placeholder="Enter password"
+                                placeholder="Create a password"
+                                required
+                                disabled={isLoading}
+                            />
+                            <Form.Text className="text-muted">
+                                Must be at least 6 characters long.
+                            </Form.Text>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Control 
+                                type="password" 
+                                ref={confirmPasswordRef}
+                                placeholder="Confirm your password"
                                 required
                                 disabled={isLoading}
                             />
@@ -96,24 +131,13 @@ export default function Login() {
                                 size="lg"
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Logging in...' : 'Login'}
-                            </Button>
-                        </div>
-
-                        <div className="d-grid mb-3">
-                            <Button 
-                                variant="outline-secondary" 
-                                onClick={handleDevLogin}
-                                size="sm"
-                                disabled={isLoading}
-                            >
-                                🚀 Dev Login (Quick Access)
+                                {isLoading ? 'Creating Account...' : 'Register'}
                             </Button>
                         </div>
 
                         <div className="text-center">
                             <small>
-                                Don't have an account? <Link to="/register">Register here</Link>
+                                Already have an account? <Link to="/login">Login here</Link>
                             </small>
                         </div>
                     </Form>
